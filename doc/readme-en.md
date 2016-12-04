@@ -2,7 +2,7 @@
 
 EasyMyBatis Pagination is a generic paging plugin for the MyBaits framework. Provides the PageBean automatic paging data encapsulation, the EasyCriteria paging condition object, and based `Mappers Interface` or `SQLID` the automated paging SQL that supports common databases.
 
-Least version: `1.8.0-RELEASE`
+Least version: `1.8.1-RELEASE`
 
 MyBatis: `3.4.0+`
 
@@ -13,7 +13,7 @@ MyBatis: `3.4.0+`
 <dependency>
 	<groupId>cn.easyproject</groupId>
 	<artifactId>easymybatis-pagination</artifactId>
-	<version>1.8.0-RELEASE</version>
+	<version>1.8.1-RELEASE</version>
 </dependency>
 ```
 
