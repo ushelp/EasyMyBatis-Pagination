@@ -641,14 +641,14 @@ function setDocumentScrollTop(ypos)
 <body class="markdown-body">
 <h2> <a id="easymybatis-pagination" class="anchor" href="#easymybatis-pagination" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>EasyMyBatis Pagination</h2> 
 <p>EasyMyBatis Pagination is a generic paging plugin for the MyBaits framework. Provides the PageBean automatic paging data encapsulation, the EasyCriteria paging condition object, and based <code>Mappers Interface</code> or <code>SQLID</code> the automated paging SQL that supports common databases.</p> 
-<p>Least version: <code>1.8.0-RELEASE</code></p> 
+<p>Least version: <code>1.9.0-RELEASE</code></p> 
 <p>MyBatis: <code>3.4.0+</code></p> 
 <h2> <a id="maven" class="anchor" href="#maven" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Maven</h2> 
 <div class="highlight highlight-text-xml">
  <pre>&lt;<span class="pl-ent">dependency</span>&gt;
     &lt;<span class="pl-ent">groupId</span>&gt;cn.easyproject&lt;/<span class="pl-ent">groupId</span>&gt;
     &lt;<span class="pl-ent">artifactId</span>&gt;easymybatis-pagination&lt;/<span class="pl-ent">artifactId</span>&gt;
-    &lt;<span class="pl-ent">version</span>&gt;1.8.0-RELEASE&lt;/<span class="pl-ent">version</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;1.9.0-RELEASE&lt;/<span class="pl-ent">version</span>&gt;
 &lt;/<span class="pl-ent">dependency</span>&gt;</pre>
 </div> 
 <h2> <a id="steps-for-usage" class="anchor" href="#steps-for-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Steps for usage</h2> 
@@ -657,7 +657,9 @@ function setDocumentScrollTop(ypos)
   <div class="highlight highlight-text-xml">
    <pre>&lt;<span class="pl-ent">plugins</span>&gt;
   &lt;<span class="pl-ent">plugin</span> <span class="pl-e">interceptor</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>cn.easyproject.easymybatis.pagination.EasyMybatisPaginationPlugin<span class="pl-pds">&quot;</span></span>&gt;
-      <span class="pl-c">&lt;!-- required; ORACLE, ORACLE_12C, SQLSERVER, SQLSERVER_2012, MYSQL --&gt;</span>
+      <span class="pl-c">&lt;!-- Default dialect; Optional --&gt;</span>
+      <span class="pl-c">&lt;!-- Also you can set or change with 'pageBean.setDialect(PageBean.XXXX_DIALECT)' code. --&gt;</span>
+      <span class="pl-c">&lt;!-- Value: ORACLE, ORACLE_12C, SQLSERVER, SQLSERVER_2012, MYSQL --&gt;</span>
       &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>dialect<span class="pl-pds">&quot;</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>MYSQL<span class="pl-pds">&quot;</span></span> /&gt;
   &lt;/<span class="pl-ent">plugin</span>&gt;
 &lt;/<span class="pl-ent">plugins</span>&gt;</pre>
@@ -754,6 +756,40 @@ session<span class="pl-k">.</span>selectList(<span class="pl-s"><span class="pl-
 <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getPageNo());
 <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getRowsPerPage());
 <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getRowsCount());</pre>
+  </div> </li> 
+ <li> <p>Example3</p> <p>A multi-table query must specify a fact table alias: <code>pageBean.setPrimaryTable();</code></p> 
+  <div class="highlight highlight-source-java">
+   <pre><span class="pl-smi">PageBean</span> pb<span class="pl-k">=</span><span class="pl-k">new</span> <span class="pl-smi">PageBean</span>();
+<span class="pl-c">// SELECT Clause; optional; default is *</span>
+pb<span class="pl-k">.</span>setSelect(<span class="pl-s"><span class="pl-pds">&quot;</span>*<span class="pl-pds">&quot;</span></span>); 
+<span class="pl-c">// FROM Name; rquired</span>
+pb<span class="pl-k">.</span>setFrom(<span class="pl-s"><span class="pl-pds">&quot;</span>Account account, AccountType type<span class="pl-pds">&quot;</span></span>);
+<span class="pl-c">// A multi-table query must specify a fact table alias</span>
+pageBean<span class="pl-k">.</span>setPrimaryTable(<span class="pl-s"><span class="pl-pds">&quot;</span>account<span class="pl-pds">&quot;</span></span>);
+<span class="pl-c">// WHERE Clause; optional; default is ''</span>
+pb<span class="pl-k">.</span>setCondition(<span class="pl-s"><span class="pl-pds">&quot;</span> and account.typeId=type.id and account.qxid&gt;=10<span class="pl-pds">&quot;</span></span>);
+<span class="pl-c">// SortName; optional; default is ''</span>
+pb<span class="pl-k">.</span>setSort(<span class="pl-s"><span class="pl-pds">&quot;</span>account.accountid<span class="pl-pds">&quot;</span></span>);
+<span class="pl-c">// SortOrder; optional; default is 'asc'</span>
+pb<span class="pl-k">.</span>setSortOrder(<span class="pl-s"><span class="pl-pds">&quot;</span>desc<span class="pl-pds">&quot;</span></span>);
+<span class="pl-c">// Page Number; optional; default is 1</span>
+pb<span class="pl-k">.</span>setPageNo(<span class="pl-c1">1</span>);
+<span class="pl-c">// Rows per page; optional; default is 10</span>
+pb<span class="pl-k">.</span>setRowsPerPage(<span class="pl-c1">4</span>);
+
+<span class="pl-c">// Query way one: Mappers Interface</span>
+<span class="pl-smi">AccountDAO</span> accountDAO<span class="pl-k">=</span>session<span class="pl-k">.</span>getMapper(<span class="pl-smi">AccountDAO</span><span class="pl-k">.</span>class);
+accountDAO<span class="pl-k">.</span>pagination(pb)
+
+<span class="pl-c">// Query way two: SQL ID</span>
+session<span class="pl-k">.</span>selectList(<span class="pl-s"><span class="pl-pds">&quot;</span>cn.easyproject.easymybatis.pagination.dao.AccountDAO.pagination<span class="pl-pds">&quot;</span></span>, pb);
+
+<span class="pl-c">// Pagination data</span>
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getData());
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getPageTotal());
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getPageNo());
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getRowsPerPage());
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getRowsCount()); </pre>
   </div> </li> 
 </ul> 
 <h2> <a id="easycriteria-query" class="anchor" href="#easycriteria-query" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>EasyCriteria Query</h2> 

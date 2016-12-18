@@ -641,14 +641,14 @@ function setDocumentScrollTop(ypos)
 <body class="markdown-body">
 <h2> <a id="easymybatis-pagination" class="anchor" href="#easymybatis-pagination" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>EasyMyBatis Pagination</h2> 
 <p>EasyMyBatis Pagination 是一个针对 MyBaits 框架的通用分页插件。提供 PageBean 自动分页数据封装, EasyCriteria 分页条件对象，支持基于<code>Mappers 接口</code>和 <code>SQLID</code> 两种方式的数据库的自动化分页 SQL。</p> 
-<p>最新版本: <code>1.8.0-RELEASE</code></p> 
+<p>最新版本: <code>1.9.0-RELEASE</code></p> 
 <p>MyBatis: <code>3.4.0+</code></p> 
 <h2> <a id="maven" class="anchor" href="#maven" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Maven</h2> 
 <div class="highlight highlight-text-xml">
  <pre>&lt;<span class="pl-ent">dependency</span>&gt;
     &lt;<span class="pl-ent">groupId</span>&gt;cn.easyproject&lt;/<span class="pl-ent">groupId</span>&gt;
     &lt;<span class="pl-ent">artifactId</span>&gt;easymybatis-pagination&lt;/<span class="pl-ent">artifactId</span>&gt;
-    &lt;<span class="pl-ent">version</span>&gt;1.8.0-RELEASE&lt;/<span class="pl-ent">version</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;1.9.0-RELEASE&lt;/<span class="pl-ent">version</span>&gt;
 &lt;/<span class="pl-ent">dependency</span>&gt;</pre>
 </div> 
 <h2> <a id="使用步骤" class="anchor" href="#%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%AA%A4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>使用步骤</h2> 
@@ -657,7 +657,9 @@ function setDocumentScrollTop(ypos)
   <div class="highlight highlight-text-xml">
    <pre>&lt;<span class="pl-ent">plugins</span>&gt;
   &lt;<span class="pl-ent">plugin</span> <span class="pl-e">interceptor</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>cn.easyproject.easymybatis.pagination.EasyMybatisPaginationPlugin<span class="pl-pds">&quot;</span></span>&gt;
-      <span class="pl-c">&lt;!-- required; ORACLE, ORACLE_12C, SQLSERVER, SQLSERVER_2012, MYSQL --&gt;</span>
+      <span class="pl-c">&lt;!-- 默认方言; 可选 --&gt;</span>
+      <span class="pl-c">&lt;!-- 也可以通过 'pageBean.setDialect(PageBean.XXXX_DIALECT)' 指定 --&gt;</span>
+      <span class="pl-c">&lt;!-- Value: ORACLE, ORACLE_12C, SQLSERVER, SQLSERVER_2012, MYSQL --&gt;</span>
       &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>dialect<span class="pl-pds">&quot;</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">&quot;</span>MYSQL<span class="pl-pds">&quot;</span></span> /&gt;
   &lt;/<span class="pl-ent">plugin</span>&gt;
 &lt;/<span class="pl-ent">plugins</span>&gt;</pre>
@@ -755,6 +757,39 @@ session<span class="pl-k">.</span>selectList(<span class="pl-s"><span class="pl-
 <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getRowsPerPage());
 <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getRowsCount());</pre>
   </div> </li> 
+ <li> <p>示例三</p> <p>多表查询必须指定事实表别名: <code>pageBean.setPrimaryTable();</code></p> 
+  <div class="highlight highlight-source-java">
+   <pre><span class="pl-smi">PageBean</span> pb<span class="pl-k">=</span><span class="pl-k">new</span> <span class="pl-smi">PageBean</span>();
+<span class="pl-c">// SELECT 语句; 可选; 默认为 *</span>
+pb<span class="pl-k">.</span>setSelect(<span class="pl-s"><span class="pl-pds">&quot;</span>*<span class="pl-pds">&quot;</span></span>); 
+<span class="pl-c">// From 语句; 必须</span>
+pb<span class="pl-k">.</span>setFrom(<span class="pl-s"><span class="pl-pds">&quot;</span>Account account, AccountType type<span class="pl-pds">&quot;</span></span>);
+<span class="pl-c">// 多表查询必须指定事实表别名</span>
+pageBean<span class="pl-k">.</span>setPrimaryTable(<span class="pl-s"><span class="pl-pds">&quot;</span>account<span class="pl-pds">&quot;</span></span>);
+<span class="pl-c">// WHERE 语句; 可选; 默认为 ''</span>
+pb<span class="pl-k">.</span>setCondition(<span class="pl-s"><span class="pl-pds">&quot;</span> and account.typeId=type.id and account.qxid&gt;=10<span class="pl-pds">&quot;</span></span>);
+<span class="pl-c">// 排序列名; 可选; 默认为 ''</span>
+pb<span class="pl-k">.</span>setSort(<span class="pl-s"><span class="pl-pds">&quot;</span>account.accountid<span class="pl-pds">&quot;</span></span>);
+<span class="pl-c">// 排序方式; 可选; 默认为 'asc'</span>
+pb<span class="pl-k">.</span>setSortOrder(<span class="pl-s"><span class="pl-pds">&quot;</span>desc<span class="pl-pds">&quot;</span></span>);
+<span class="pl-c">// 当前页数; 可选; 默认为 1</span>
+pb<span class="pl-k">.</span>setPageNo(<span class="pl-c1">1</span>);
+<span class="pl-c">// 每页条数; 可选; 默认为 10</span>
+pb<span class="pl-k">.</span>setRowsPerPage(<span class="pl-c1">4</span>);
+
+<span class="pl-c">// 查询方式一: Mappers Interface</span>
+<span class="pl-smi">AccountDAO</span> accountDAO<span class="pl-k">=</span>session<span class="pl-k">.</span>getMapper(<span class="pl-smi">AccountDAO</span><span class="pl-k">.</span>class);
+accountDAO<span class="pl-k">.</span>pagination(pb)
+
+<span class="pl-c">// 查询方式二: SQL ID</span>
+session<span class="pl-k">.</span>selectList(<span class="pl-s"><span class="pl-pds">&quot;</span>cn.easyproject.easymybatis.pagination.dao.AccountDAO.pagination<span class="pl-pds">&quot;</span></span>, pb);
+
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getData());
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getPageTotal());
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getPageNo());
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getRowsPerPage());
+<span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(pb<span class="pl-k">.</span>getRowsCount());</pre>
+  </div> </li> 
 </ul> 
 <h2> <a id="easycriteria-条件查询" class="anchor" href="#easycriteria-%E6%9D%A1%E4%BB%B6%E6%9F%A5%E8%AF%A2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>EasyCriteria 条件查询</h2> 
 <ol> 
@@ -823,7 +858,7 @@ pb<span class="pl-k">.</span>setCondition(<span class="pl-s"><span class="pl-pds
 pb<span class="pl-k">.</span>setPageNo(<span class="pl-c1">1</span>);
 pb<span class="pl-k">.</span>setRowsPerPage(<span class="pl-c1">3</span>);
 
-<span class="pl-c">// Use someway Query by PageBean...</span>
+<span class="pl-c">// Use someway query by PageBean...</span>
 <span class="pl-c">// ...</span></pre>
   </div> </li> 
 </ol> 

@@ -2,7 +2,7 @@
 
 EasyMyBatis Pagination is a generic paging plugin for the MyBaits framework. Provides the PageBean automatic paging data encapsulation, the EasyCriteria paging condition object, and based `Mappers Interface` or `SQLID` the automated paging SQL that supports common databases.
 
-Least version: `1.8.1-RELEASE`
+Least version: `1.9.0-RELEASE`
 
 MyBatis: `3.4.0+`
 
@@ -13,7 +13,7 @@ MyBatis: `3.4.0+`
 <dependency>
 	<groupId>cn.easyproject</groupId>
 	<artifactId>easymybatis-pagination</artifactId>
-	<version>1.8.1-RELEASE</version>
+	<version>1.9.0-RELEASE</version>
 </dependency>
 ```
 
@@ -25,7 +25,9 @@ MyBatis: `3.4.0+`
  ```XML
  <plugins>
 	<plugin interceptor="cn.easyproject.easymybatis.pagination.EasyMybatisPaginationPlugin">
-		<!-- required; ORACLE, ORACLE_12C, SQLSERVER, SQLSERVER_2012, MYSQL -->
+		<!-- Default dialect; Optional -->
+		<!-- Also you can set or change with 'pageBean.setDialect(PageBean.XXXX_DIALECT)' code. -->
+		<!-- Value: ORACLE, ORACLE_12C, SQLSERVER, SQLSERVER_2012, MYSQL -->
 		<property name="dialect" value="MYSQL" />
 	</plugin>
  </plugins>
@@ -126,6 +128,44 @@ MyBatis: `3.4.0+`
  System.out.println(pb.getPageNo());
  System.out.println(pb.getRowsPerPage());
  System.out.println(pb.getRowsCount());
+ ```
+ 
+- Example3
+
+ A multi-table query must specify a fact table alias: `pageBean.setPrimaryTable();`
+
+ ```JAVA
+ PageBean pb=new PageBean();
+ // SELECT Clause; optional; default is *
+ pb.setSelect("*"); 
+ // FROM Name; rquired
+ pb.setFrom("Account account, AccountType type");
+ // A multi-table query must specify a fact table alias
+ pageBean.setPrimaryTable("account");
+ // WHERE Clause; optional; default is ''
+ pb.setCondition(" and account.typeId=type.id and account.qxid>=10");
+ // SortName; optional; default is ''
+ pb.setSort("account.accountid");
+ // SortOrder; optional; default is 'asc'
+ pb.setSortOrder("desc");
+ // Page Number; optional; default is 1
+ pb.setPageNo(1);
+ // Rows per page; optional; default is 10
+ pb.setRowsPerPage(4);
+
+ // Query way one: Mappers Interface
+ AccountDAO accountDAO=session.getMapper(AccountDAO.class);
+ accountDAO.pagination(pb)
+ 
+ // Query way two: SQL ID
+ session.selectList("cn.easyproject.easymybatis.pagination.dao.AccountDAO.pagination", pb);
+ 
+ // Pagination data
+ System.out.println(pb.getData());
+ System.out.println(pb.getPageTotal());
+ System.out.println(pb.getPageNo());
+ System.out.println(pb.getRowsPerPage());
+ System.out.println(pb.getRowsCount()); 
  ```
  
 ## EasyCriteria Query

@@ -2,7 +2,7 @@
 
 EasyMyBatis Pagination 是一个针对 MyBaits 框架的通用分页插件。提供 PageBean 自动分页数据封装, EasyCriteria 分页条件对象，支持基于` Mappers 接口`和 `SQLID` 两种方式的数据库的自动化分页 SQL。
 
-最新版本: `1.8.1-RELEASE`
+最新版本: `1.9.0-RELEASE`
 
 MyBatis: `3.4.0+`
 
@@ -12,7 +12,7 @@ MyBatis: `3.4.0+`
 <dependency>
 	<groupId>cn.easyproject</groupId>
 	<artifactId>easymybatis-pagination</artifactId>
-	<version>1.8.1-RELEASE</version>
+	<version>1.9.0-RELEASE</version>
 </dependency>
 ```
 
@@ -23,7 +23,9 @@ MyBatis: `3.4.0+`
  ```XML
  <plugins>
 	<plugin interceptor="cn.easyproject.easymybatis.pagination.EasyMybatisPaginationPlugin">
-		<!-- required; ORACLE, ORACLE_12C, SQLSERVER, SQLSERVER_2012, MYSQL -->
+		<!-- 默认方言; 可选 -->
+		<!-- 也可以通过 'pageBean.setDialect(PageBean.XXXX_DIALECT)' 指定 -->
+		<!-- Value: ORACLE, ORACLE_12C, SQLSERVER, SQLSERVER_2012, MYSQL -->
 		<property name="dialect" value="MYSQL" />
 	</plugin>
  </plugins>
@@ -125,6 +127,44 @@ MyBatis: `3.4.0+`
  System.out.println(pb.getRowsPerPage());
  System.out.println(pb.getRowsCount());
  ```
+ 
+- 示例三
+
+  多表查询必须指定事实表别名: `pageBean.setPrimaryTable();`
+
+ ```JAVA
+ PageBean pb=new PageBean();
+ // SELECT 语句; 可选; 默认为 *
+ pb.setSelect("*"); 
+ // From 语句; 必须
+ pb.setFrom("Account account, AccountType type");
+ // 多表查询必须指定事实表别名
+ pageBean.setPrimaryTable("account");
+ // WHERE 语句; 可选; 默认为 ''
+ pb.setCondition(" and account.typeId=type.id and account.qxid>=10");
+ // 排序列名; 可选; 默认为 ''
+ pb.setSort("account.accountid");
+ // 排序方式; 可选; 默认为 'asc'
+ pb.setSortOrder("desc");
+ // 当前页数; 可选; 默认为 1
+ pb.setPageNo(1);
+ // 每页条数; 可选; 默认为 10
+ pb.setRowsPerPage(4);
+
+ // 查询方式一: Mappers Interface
+ AccountDAO accountDAO=session.getMapper(AccountDAO.class);
+ accountDAO.pagination(pb)
+ 
+ // 查询方式二: SQL ID
+ session.selectList("cn.easyproject.easymybatis.pagination.dao.AccountDAO.pagination", pb);
+
+ System.out.println(pb.getData());
+ System.out.println(pb.getPageTotal());
+ System.out.println(pb.getPageNo());
+ System.out.println(pb.getRowsPerPage());
+ System.out.println(pb.getRowsCount());
+ ```
+  
  
 ## EasyCriteria 条件查询
 
