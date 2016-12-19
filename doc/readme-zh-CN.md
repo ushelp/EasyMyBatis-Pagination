@@ -2,7 +2,7 @@
 
 EasyMyBatis Pagination 是一个针对 MyBaits 框架的通用分页插件。提供 PageBean 自动分页数据封装, EasyCriteria 分页条件对象，支持基于` Mappers 接口`和 `SQLID` 两种方式的数据库的自动化分页 SQL。
 
-最新版本: `1.9.0-RELEASE`
+最新版本: `1.9.1-RELEASE`
 
 MyBatis: `3.4.0+`
 
@@ -12,7 +12,7 @@ MyBatis: `3.4.0+`
 <dependency>
 	<groupId>cn.easyproject</groupId>
 	<artifactId>easymybatis-pagination</artifactId>
-	<version>1.9.0-RELEASE</version>
+	<version>1.9.1-RELEASE</version>
 </dependency>
 ```
 
