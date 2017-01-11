@@ -107,9 +107,9 @@ MyBatis: `3.4.0+`
  pb.setPageNo(2);
  pb.setRowsPerPage(5);
  // data sql
- pb.setSql("select * from Account where accountId<=80 and accountName=? limit 5,5"); 
+ pb.setSql("select * from Account where accountId<=80 and accountName=#{accoutName} limit 5,5"); 
  // total sql
- pb.setCountSQL("select count(*) from Account where accountId<=80 and accoutName=?"); 
+ pb.setCountSQL("select count(*) from Account where accountId<=80 and accoutName=#{accoutName}"); 
 
  // Set parameter values
  Map<String, Object> values=new HashMap<String,Object>();
